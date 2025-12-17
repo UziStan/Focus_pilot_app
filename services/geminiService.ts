@@ -2,13 +2,19 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { DataStore } from './dataStore';
 
-// Initialize the Google GenAI client using the environment variable directly.
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 // Use Flash Lite for low-latency command parsing and extraction.
 const FAST_MODEL = 'gemini-flash-lite-latest';
 // Use Pro for complex reasoning and chat.
 const PRO_MODEL = 'gemini-3-pro-preview';
+
+// Helper to get client safely
+const getClient = () => {
+  const apiKey = process.env.API_KEY;
+  if (!apiKey) {
+    console.error("FocusPilot: API_KEY environment variable is missing.");
+  }
+  return new GoogleGenAI({ apiKey: apiKey || '' });
+};
 
 // Structured schema for command parsing.
 const parsedCommandSchema = {
@@ -72,6 +78,7 @@ const receiptExtractSchema = {
 export const GeminiService = {
   // Parses natural language input into structured commands.
   parseCommand: async (text: string) => {
+    const ai = getClient();
     const db = await DataStore.get();
     const settings = db.settings;
     const now = new Date().toISOString();
@@ -102,6 +109,7 @@ export const GeminiService = {
 
   // Extracts information from a base64 encoded receipt image.
   extractReceipt: async (base64Image: string) => {
+    const ai = getClient();
     const response = await ai.models.generateContent({
       model: FAST_MODEL,
       contents: [
@@ -119,6 +127,7 @@ export const GeminiService = {
 
   // Initializes a new chat session with user context.
   createChatSession: async () => {
+    const ai = getClient();
     const db = await DataStore.get();
     const context = `
       You are the FocusPilot AI Concierge. 
