@@ -1,0 +1,8 @@
+{
+  "name": "FocusPilot",
+  "description": "An AI-powered personal assistant for tasks, bills, calendar, and receipts with persistent reminders.",
+  "requestFramePermissions": [
+    "microphone",
+    "camera"
+  ]
+}
