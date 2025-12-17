@@ -8,9 +8,5 @@
     "allowJs": true,
     "jsx": "react-jsx",
     "noEmit": true
-          ]
-    },
-    "allowImportingTsExtensions": true,
-    "noEmit": true
-  }
+           }
 }
